@@ -1,9 +1,10 @@
 package backtobasicsoop.api
 
+import backtobasicsoop.domain.Error
 import backtobasicsoop.domain.entities.CartId
 import backtobasicsoop.domain.entities.ItemId
 import backtobasicsoop.domain.use_cases.AddItemToCartRequest
-import backtobasicsoop.shared.Result
+import backtobasicsoop.shared.Either
 import io.ktor.application.call
 import io.ktor.request.receive
 import io.ktor.routing.Route
@@ -13,7 +14,7 @@ import java.util.*
 
 data class AddItemToCartRequestDto(val itemId: ItemId, val quantity: Int)
 
-fun Route.carts(addItemToCartRequestHandlerFactory: () -> (AddItemToCartRequest) -> Result<Unit>) {
+fun Route.carts(addItemToCartRequestHandlerFactory: () -> (AddItemToCartRequest) -> Either<Error, Unit>) {
     route("/carts") {
         post("/{cartId}/items") {
             val cartId = CartId(UUID.fromString(call.parameters["cartId"]));

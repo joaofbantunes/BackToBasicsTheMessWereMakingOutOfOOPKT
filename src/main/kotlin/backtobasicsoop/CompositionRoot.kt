@@ -1,7 +1,7 @@
 package backtobasicsoop
 
+import backtobasicsoop.domain.Error
 import backtobasicsoop.domain.entities.ItemId
-import backtobasicsoop.shared.Result
 import backtobasicsoop.domain.services.post_add_item_to_cart_listeners.CompositePostAddItemToCartListener
 import backtobasicsoop.domain.services.post_add_item_to_cart_listeners.WatchlistNotifierListener
 import backtobasicsoop.domain.use_cases.AddItemToCartRequest
@@ -12,6 +12,7 @@ import backtobasicsoop.infrastructure.data.InMemoryCartRepository
 import backtobasicsoop.infrastructure.data.InMemoryItemRepository
 import backtobasicsoop.infrastructure.data.InMemoryItemSaleRuleRepository
 import backtobasicsoop.infrastructure.services.LoggingItemNotifier
+import backtobasicsoop.shared.Either
 import java.util.*
 
 private val cartRepository = InMemoryCartRepository()
@@ -29,11 +30,8 @@ private val addItemToCartListener = CompositePostAddItemToCartListener(
 private fun <TIn : Any, TOut : Any> RequestHandler<TIn, TOut>.withLogging() = RequestHandlerLoggingDecorator(this)
 private fun <TIn : Any, TOut : Any> RequestHandler<TIn, TOut>.asFunction() = this::handle
 
-fun x(): RequestHandler<AddItemToCartRequest, Result<Unit>> =
-    AddItemToCartRequestHandler(cartRepository, itemRepository, itemSaleRuleRepository, addItemToCartListener)
-        .withLogging()
 
-fun createAddItemToCartRequestHandler(): (AddItemToCartRequest) -> Result<Unit> =
+fun createAddItemToCartRequestHandler(): (AddItemToCartRequest) -> Either<Error, Unit> =
     AddItemToCartRequestHandler(cartRepository, itemRepository, itemSaleRuleRepository, addItemToCartListener)
         .withLogging()
         .asFunction()

@@ -1,10 +1,8 @@
 package backtobasicsoop.domain.entities
 
-import backtobasicsoop.domain.entities.Cart
-import backtobasicsoop.domain.entities.Item
-import backtobasicsoop.shared.Result
-
+import backtobasicsoop.domain.Error
+import backtobasicsoop.shared.Either
 
 interface ItemSaleRule {
-    fun validate(cart: Cart, item: Item, quantity: Int): Result<Unit>
+    fun validate(cart: Cart, item: Item, quantity: Int): Either<Error, Unit>
 }

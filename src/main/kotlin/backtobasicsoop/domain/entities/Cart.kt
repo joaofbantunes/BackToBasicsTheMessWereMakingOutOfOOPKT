@@ -1,33 +1,34 @@
 package backtobasicsoop.domain.entities
 
-import backtobasicsoop.shared.Result
+import backtobasicsoop.domain.Error
+import backtobasicsoop.shared.Either
 
 class Cart private constructor(val id: CartId, private val itemsMap: HashMap<ItemId, CartItem>) {
     val items: Collection<CartItem>
         get() = itemsMap.values
 
-    fun addItemToCart(item: Item, quantity: Int): Result<CartItem>
+    fun addItemToCart(item: Item, quantity: Int): Either<Error, CartItem>
     {
         if (itemsMap.containsKey(item.id))
         {
-            return Result.Error.Invalid("Item ${item.id} already in the cart.")
+            return Either.left(Error.Invalid("Item ${item.id} already in the cart."))
         }
 
         val cartItem = CartItem(item.id, quantity)
         itemsMap[item.id] = cartItem
-        return Result.Success(cartItem)
+        return Either.right(cartItem)
     }
 
-    fun updateItemInCart(item: Item, quantity: Int): Result<CartItem>
+    fun updateItemInCart(item: Item, quantity: Int): Either<Error, CartItem>
     {
         if (!itemsMap.containsKey(item.id))
         {
-            return Result.Error.Invalid("Item ${item.id} not in the cart.")
+            return Either.left(Error.Invalid("Item ${item.id} not in the cart."))
         }
 
         val cartItem = CartItem(item.id, quantity)
         itemsMap[item.id] = cartItem
-        return Result.Success(cartItem)
+        return Either.right(cartItem)
     }
 
     fun removeItemFromCart(itemId: ItemId) : Unit
