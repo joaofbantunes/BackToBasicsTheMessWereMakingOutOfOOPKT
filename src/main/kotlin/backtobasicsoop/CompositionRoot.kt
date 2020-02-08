@@ -27,7 +27,13 @@ private val addItemToCartListener = CompositePostAddItemToCartListener(
 )
 
 private fun <TIn : Any, TOut : Any> RequestHandler<TIn, TOut>.withLogging() = RequestHandlerLoggingDecorator(this)
+private fun <TIn : Any, TOut : Any> RequestHandler<TIn, TOut>.asFunction() = this::handle
 
-fun createAddItemToCartRequestHandler(): RequestHandler<AddItemToCartRequest, Result<Unit>> =
+fun x(): RequestHandler<AddItemToCartRequest, Result<Unit>> =
     AddItemToCartRequestHandler(cartRepository, itemRepository, itemSaleRuleRepository, addItemToCartListener)
         .withLogging()
+
+fun createAddItemToCartRequestHandler(): (AddItemToCartRequest) -> Result<Unit> =
+    AddItemToCartRequestHandler(cartRepository, itemRepository, itemSaleRuleRepository, addItemToCartListener)
+        .withLogging()
+        .asFunction()
