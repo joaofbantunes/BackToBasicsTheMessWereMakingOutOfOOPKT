@@ -24,3 +24,13 @@ inline fun <L, R, T> Either<L, R>.flatMap(f: (R) -> Either<L, T>): Either<L, T> 
 
 inline fun <L, R, T> Either<L, R>.map(f: (R) -> T): Either<L, T> =
     flatMap { Either.Right(f(it)) }
+
+inline fun <L, R> Either<L, R>.exec(left: (L) -> Any, right: (R) -> Any): Either<L, R> {
+    this.fold(left, right)
+    return this
+}
+
+inline fun <L, R> Either<L, R>.exec(right: (R) -> Any): Either<L, R> {
+    this.fold({ this as Either.Left }, right)
+    return this
+}
